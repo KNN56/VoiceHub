@@ -697,4 +697,37 @@ body {
         flex-direction: column;
     }
 }
-    
+    /* ── Urgency Selector ── */
+.urgency-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: .75rem;
+}
+
+.urgency-card { position: relative; cursor: pointer; }
+.urgency-card input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
+
+.urgency-inner {
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  padding: .9rem .75rem;
+  text-align: center;
+  transition: all .2s;
+  background: white;
+  user-select: none;
+}
+.urgency-inner:hover { border-color: #94a3b8; box-shadow: 0 2px 10px rgba(0,0,0,.08); }
+
+.urgency-icon  { font-size: 1.6rem; margin-bottom: .3rem; display: block; }
+.urgency-title { font-weight: 700; font-size: .95rem; display: block; }
+.urgency-desc  { font-size: .78rem; color: #64748b; margin-top: .15rem; display: block; }
+
+/* สีเมื่อเลือก */
+.urgency-card.high   input:checked ~ .urgency-inner { border-color: #ef4444; background: #fef2f2; box-shadow: 0 0 0 3px rgba(239,68,68,.15); }
+.urgency-card.high   input:checked ~ .urgency-inner .urgency-title { color: #ef4444; }
+
+.urgency-card.medium input:checked ~ .urgency-inner { border-color: #f59e0b; background: #fffbeb; box-shadow: 0 0 0 3px rgba(245,158,11,.15); }
+.urgency-card.medium input:checked ~ .urgency-inner .urgency-title { color: #f59e0b; }
+
+.urgency-card.low    input:checked ~ .urgency-inner { border-color: #10b981; background: #f0fdf4; box-shadow: 0 0 0 3px rgba(16,185,129,.15); }
+.urgency-card.low    input:checked ~ .urgency-inner .urgency-title { color: #10b981; }

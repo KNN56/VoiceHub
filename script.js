@@ -93,35 +93,48 @@ faqItems.forEach(item => {
     });
 });
 
+// ===== Supabase Setup =====
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+
+const supabase = createClient(
+    'YOUR_SUPABASE_URL',       // https://jcomkijbdmeyffekfarg.supabase.co/rest/v1/
+    'YOUR_SUPABASE_ANON_KEY'   // eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impjb21raWpiZG1leWZmZWtmYXJnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc2MTM2OTMsImV4cCI6MjA5MzE4OTY5M30.Rmy2E3a36qFZKsqKEMlrIK9uKPdx8dmnN0m7IJ1tquU
+)
+
 // ===== Form Submission =====
 const feedbackForm = document.getElementById('feedbackForm');
 const successModal = document.getElementById('successModal');
 
-feedbackForm.addEventListener('submit', (e) => {
+feedbackForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    
-    // จำลองการส่งข้อมูล
+
     const formData = {
-        studentId: document.getElementById('studentId').value,
+        student_id: document.getElementById('studentId').value,
         faculty: document.getElementById('faculty').value,
         category: document.getElementById('category').value,
         title: document.getElementById('title').value,
         description: document.getElementById('description').value,
         email: document.getElementById('email').value,
-        anonymous: document.getElementById('anonymous').checked
-    };
+        anonymous: document.getElementById('anonymous').checked,
+        status: 'pending'
+    }
 
-    console.log('ข้อมูลที่ส่ง:', formData);
+    // บันทึกลง Supabase
+    const { error } = await supabase
+        .from('submissions')
+        .insert([formData])
 
-    // สร้างรหัสติดตาม
-    const trackingCode = `VCE-2024-${String(Math.floor(Math.random() * 9999)).padStart(4, '0')}`;
-    document.querySelector('.tracking-display').textContent = trackingCode;
+    if (error) {
+        alert('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง')
+        console.error(error)
+        return
+    }
 
-    // แสดง Modal
-    successModal.classList.add('show');
-
-    // รีเซ็ตฟอร์ม
-    feedbackForm.reset();
+    // แสดง Modal สำเร็จ
+    const trackingCode = `VCE-2024-${String(Math.floor(Math.random() * 9999)).padStart(4, '0')}`
+    document.querySelector('.tracking-display').textContent = trackingCode
+    successModal.classList.add('show')
+    feedbackForm.reset()
 });
 
 function closeModal() {
