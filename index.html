@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoiceHub - ระบบรับฟังความคิดเห็น</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="[fonts.googleapis.com](https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap)" rel="stylesheet">
+</head>
+<body>
+    <!-- ส่วนหัว Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <span class="logo-icon">🎓</span>
+                <span class="logo-text">VoiceHub</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link active">หน้าแรก</a></li>
+                <li><a href="#submit" class="nav-link">ส่งข้อเสนอแนะ</a></li>
+                <li><a href="#status" class="nav-link">ติดตามสถานะ</a></li>
+                <li><a href="#faq" class="nav-link">คำถามที่พบบ่อย</a></li>
+            </ul>
+            <button class="hamburger" aria-label="เมนู">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- ส่วน Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>Your Voice<br><span class="highlight">Our Direction</span></h1>
+            <p>ขอเป็นส่วนหนึ่งในการพัฒนาคุณภาพชีวิต<br>เสียงของคุณมีความหมาย</p>
+            <a href="#submit" class="btn btn-primary">ส่งข้อเสนอแนะ</a>
+        </div>
+        <div class="hero-image">
+            <div class="floating-card card-1">💬 ความคิดเห็น</div>
+            <div class="floating-card card-2">✨ ข้อเสนอแนะ</div>
+            <div class="floating-card card-3">🎯 ปรับปรุง</div>
+        </div>
+    </section>
+
+    <!-- ส่วนสถิติ -->
+    <section class="stats">
+        <div class="stats-container">
+            <div class="stat-item">
+                <span class="stat-number" data-target="1247">0</span>
+                <span class="stat-label">ข้อเสนอแนะทั้งหมด</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" data-target="892">0</span>
+                <span class="stat-label">ดำเนินการแล้ว</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" data-target="98">0</span>
+                <span class="stat-label">% ความพึงพอใจ</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ส่วนฟอร์มส่งข้อเสนอแนะ -->
+    <section id="submit" class="submit-section">
+        <div class="section-container">
+            <h2 class="section-title">ส่งข้อเสนอแนะ</h2>
+            <p class="section-subtitle">กรอกข้อมูลด้านล่างเพื่อส่งความคิดเห็นของคุณ</p>
+            
+            <form id="feedbackForm" class="feedback-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="studentId">รหัสนิสิต <span class="optional">(ไม่บังคับ)</span></label>
+                        <input type="text" id="studentId" placeholder="เช่น 65012345">
+                    </div>
+                    <div class="form-group">
+                        <label for="faculty">สาขาวิชา</label>
+                        <select id="faculty" required>
+                            <option value="">เลือกสาขาวิชา</option>
+                            <option value="political science">รัฐศาสตร์</option>
+                            <option value="local affairs administration">การบริหารงานท้องถิ่น</option>
+                            <option value="general administration">การบริหารทั่วไป</option>
+                            <option value="law">นิติศาสตร์</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="category">หมวดหมู่</label>
+                    <select id="category" required>
+                        <option value="">เลือกหมวดหมู่</option>
+                        <option value="academic">📚 วิชาการ / หลักสูตร</option>
+                        <option value="facility">🏢 สิ่งอำนวยความสะดวก</option>
+                        <option value="welfare">🤝 สวัสดิการ</option>
+                        <option value="activity">🎉 กิจกรรม</option>
+                        <option value="problems">🛡️ ปัญหาในมหาวิทยาลัย</option>
+                        <option value="other">💡 อื่นๆ</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="title">หัวข้อ</label>
+                    <input type="text" id="title" placeholder="สรุปสั้นๆ ว่าต้องการเสนอเรื่องอะไร" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">รายละเอียด</label>
+                    <textarea id="description" rows="5" placeholder="อธิบายรายละเอียดเพิ่มเติม..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">อีเมล <span class="optional">(หากต้องการรับการติดตามผล)</span></label>
+                    <input type="email" id="email" placeholder="6xxxxxxx@go.buu.ac.th">
+                </div>
+
+                <div class="form-check">
+                    <input type="checkbox" id="anonymous">
+                    <label for="anonymous">ส่งแบบไม่ระบุตัวตน</label>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-full">
+                    <span>ส่งข้อเสนอแนะ</span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                    </svg>
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- ส่วนติดตามสถานะ -->
+    <section id="status" class="status-section">
+        <div class="section-container">
+            <h2 class="section-title">ติดตามสถานะ</h2>
+            <p class="section-subtitle">ค้นหาสถานะข้อเสนอแนะของคุณด้วยรหัสติดตาม</p>
+            
+            <div class="search-box">
+                <input type="text" id="trackingId" placeholder="ใส่รหัสติดตาม เช่น VCE-2024-0001">
+                <button class="btn btn-primary">ค้นหา</button>
+            </div>
+
+            <!-- ตัวอย่างผลการค้นหา -->
+            <div class="status-result" id="statusResult">
+                <div class="status-card">
+                    <div class="status-header">
+                        <span class="tracking-code">VCE-2024-0847</span>
+                        <span class="status-badge status-progress">กำลังดำเนินการ</span>
+                    </div>
+                    <h3>เพิ่มปลั๊กไฟในห้องสมุด</h3>
+                    <p>ขอให้เพิ่มปลั๊กไฟสำหรับชาร์จโน้ตบุ๊คในห้องสมุดกลาง ชั้น 3</p>
+                    <div class="status-timeline">
+                        <div class="timeline-item completed">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <span class="timeline-date">15 ม.ค. 2567</span>
+                                <span class="timeline-text">รับเรื่องแล้ว</span>
+                            </div>
+                        </div>
+                        <div class="timeline-item completed">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <span class="timeline-date">18 ม.ค. 2567</span>
+                                <span class="timeline-text">ส่งต่อหน่วยงานที่เกี่ยวข้อง</span>
+                            </div>
+                        </div>
+                        <div class="timeline-item active">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <span class="timeline-date">กำลังดำเนินการ</span>
+                                <span class="timeline-text">อยู่ระหว่างพิจารณางบประมาณ</span>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <span class="timeline-date">-</span>
+                                <span class="timeline-text">ดำเนินการเสร็จสิ้น</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ส่วน FAQ -->
+    <section id="faq" class="faq-section">
+        <div class="section-container">
+            <h2 class="section-title">คำถามที่พบบ่อย</h2>
+            
+            <div class="faq-list">
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>ข้อเสนอแนะจะถูกส่งไปที่ไหน?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>ข้อเสนอแนะจะถูกส่งไปยังหน่วยงานที่เกี่ยวข้องโดยตรง เช่น ข้อเสนอเรื่องสิ่งอำนวยความสะดวกจะส่งไปยังกองอาคารสถานที่ ข้อเสนอเรื่องวิชาการจะส่งไปยังสำนักบริหารวิชาการ</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>ใช้เวลานานแค่ไหนในการตอบกลับ?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>โดยปกติจะได้รับการตอบรับภายใน 3-5 วันทำการ และจะมีการอัพเดทสถานะเป็นระยะจนกว่าจะดำเนินการเสร็จสิ้น</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>ส่งแบบไม่ระบุตัวตนได้ไหม?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>ได้ครับ/ค่ะ คุณสามารถเลือก "ส่งแบบไม่ระบุตัวตน" ได้ แต่หากต้องการติดตามผลหรือรับการแจ้งเตือน แนะนำให้ใส่อีเมลไว้</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ส่วนท้าย Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <span class="logo-icon">🎓</span>
+                <span class="logo-text">เสียงนิสิต</span>
+                <p>ระบบรับฟังความคิดเห็นนิสิต<br>รัฐศาสตร์และนิติศาสตร์</p>
+            </div>
+            <div class="footer-links">
+                <h4>ลิงก์ด่วน</h4>
+                <a href="#home">หน้าแรก</a>
+                <a href="#submit">ส่งข้อเสนอแนะ</a>
+                <a href="#status">ติดตามสถานะ</a>
+            </div>
+            <div class="footer-contact">
+                <h4>ติดต่อเรา</h4>
+                <p>📧 studentvoice@university.ac.th</p>
+                <p>📞 02-xxx-xxxx</p>
+                <p>🕐 จันทร์-ศุกร์ 8:00-16:00</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2567 เสียงนิสิต - สงวนลิขสิทธิ์</p>
+        </div>
+    </footer>
+
+    <!-- Modal สำเร็จ -->
+    <div id="successModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-icon">✅</div>
+            <h3>ส่งข้อเสนอแนะสำเร็จ!</h3>
+            <p>รหัสติดตามของคุณคือ</p>
+            <div class="tracking-display">VCE-2024-0848</div>
+            <p class="modal-note">กรุณาบันทึกรหัสนี้ไว้เพื่อติดตามสถานะ</p>
+            <button class="btn btn-primary" onclick="closeModal()">เข้าใจแล้ว</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
