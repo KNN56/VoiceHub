@@ -97,7 +97,7 @@ faqItems.forEach(item => {
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
 const supabase = createClient(
-    'https://jcomkijbdmeyffekfarg.supabase.co/rest/v1/',       // 
+    'https://jcomkijbdmeyffekfarg.supabase.co',       // 
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impjb21raWpiZG1leWZmZWtmYXJnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc2MTM2OTMsImV4cCI6MjA5MzE4OTY5M30.Rmy2E3a36qFZKsqKEMlrIK9uKPdx8dmnN0m7IJ1tquU'   // 
 )
 
