@@ -490,6 +490,13 @@
                         <option value="medium">🟡 กลาง</option>
                         <option value="low">🟢 น้อย</option>
                     </select>
+                    <select id="filterFaculty" onchange="filterTable()">
+                        <option value="">ทุกสาขา</option>
+                        <option value="political science">รัฐศาสตร์</option>
+                        <option value="local affairs administration">การบริหารงานท้องถิ่น</option>
+                        <option value="general administration">การบริหารทั่วไป</option>
+                        <option value="law">นิติศาสตร์</option>
+                    </select>
                 </div>
             </div>
 
@@ -718,6 +725,7 @@
         const category = document.getElementById('filterCategory').value
         const intent   = document.getElementById('filterIntent').value
         const urgency  = document.getElementById('filterUrgency').value
+        const faculty  = document.getElementById('filterFaculty').value
 
         const filtered = allData.filter(item => {
             const matchSearch   = !search   || (item.title||'').toLowerCase().includes(search) || (item.description||'').toLowerCase().includes(search) || (item.student_id||'').toLowerCase().includes(search)
@@ -725,7 +733,8 @@
             const matchCategory = !category || item.category === category
             const matchIntent   = !intent   || item.intent   === intent
             const matchUrgency  = !urgency  || item.urgency  === urgency
-            return matchSearch && matchStatus && matchCategory && matchIntent && matchUrgency
+            const matchFaculty  = !faculty  || item.faculty  === faculty
+            return matchSearch && matchStatus && matchCategory && matchIntent && matchUrgency && matchFaculty
         })
 
         renderTable(filtered)
