@@ -502,6 +502,10 @@
                     <label>ไม่ระบุตัวตน</label>
                     <p id="modalAnonymous">-</p>
                 </div>
+                <div class="detail-item">
+                    <label>รหัสติดตาม</label>
+                    <p id="modalTrackingCode" style="font-family:monospace; font-weight:700; color:var(--primary)">-</p>
+                </div>
             </div>
             <div class="detail-message" id="modalDescription"></div>
 
@@ -608,6 +612,7 @@
             return `
                 <tr>
                     <td>${date}</td>
+                    <td><code style="font-size:0.8rem; background:var(--gray-100); padding:0.2rem 0.5rem; border-radius:4px;">${item.tracking_code || '-'}</code></td>
                     <td><strong>${item.title || '-'}</strong></td>
                     <td><span class="category-badge">${item.category || '-'}</span></td>
                     <td>${item.faculty || '-'}</td>
@@ -622,6 +627,7 @@
                 <thead>
                     <tr>
                         <th>วันที่</th>
+                        <th>รหัสติดตาม</th>
                         <th>หัวข้อ</th>
                         <th>หมวด</th>
                         <th>สาขา</th>
@@ -665,6 +671,7 @@
         document.getElementById('modalCategory').textContent = item.category || '-'
         document.getElementById('modalEmail').textContent = item.email || '-'
         document.getElementById('modalAnonymous').textContent = item.anonymous ? 'ใช่' : 'ไม่'
+        document.getElementById('modalTrackingCode').textContent = item.tracking_code || '-'
         document.getElementById('modalDescription').textContent = item.description || '-'
         document.getElementById('modalDate').textContent = new Date(item.created_at).toLocaleDateString('th-TH', {
             day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
@@ -690,6 +697,7 @@
 
         if (error) {
             alert('เกิดข้อผิดพลาด ลองใหม่อีกครั้ง')
+            console.error(error)
             return
         }
 
@@ -699,7 +707,7 @@
 
         updateStats(allData)
         filterTable()
-        closeModal()
+        window.closeModal()
         alert('✅ อัปเดตสถานะเรียบร้อย')
     }
 
