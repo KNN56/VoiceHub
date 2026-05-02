@@ -233,6 +233,24 @@
             color: var(--gray-500);
             text-transform: uppercase;
             letter-spacing: 0.05em;
+            cursor: pointer;
+            user-select: none;
+            white-space: nowrap;
+        }
+
+        th:hover { color: var(--primary); }
+        th.sort-asc::after { content: ' ↑'; color: var(--primary); }
+        th.sort-desc::after { content: ' ↓'; color: var(--primary); }
+
+        .urgency-high { color: #DC2626; font-weight: 600; }
+        .urgency-medium { color: #D97706; font-weight: 600; }
+        .urgency-low { color: #16A34A; font-weight: 600; }
+        .intent-badge {
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            background: rgba(139,0,0,0.08);
+            color: var(--primary);
         }
 
         td {
@@ -457,7 +475,20 @@
                         <option value="welfare">สวัสดิการ</option>
                         <option value="activity">กิจกรรม</option>
                         <option value="problems">ปัญหา</option>
+                        <option value="clubhouse">สโมสร</option>
                         <option value="other">อื่นๆ</option>
+                    </select>
+                    <select id="filterIntent" onchange="filterTable()">
+                        <option value="">ทุกเจตนา</option>
+                        <option value="complaint">ร้องเรียน</option>
+                        <option value="demand">เรียกร้อง</option>
+                        <option value="request">คำขอ</option>
+                    </select>
+                    <select id="filterUrgency" onchange="filterTable()">
+                        <option value="">ทุกระดับ</option>
+                        <option value="high">🔴 มาก</option>
+                        <option value="medium">🟡 กลาง</option>
+                        <option value="low">🟢 น้อย</option>
                     </select>
                 </div>
             </div>
@@ -490,6 +521,14 @@
                 <div class="detail-item">
                     <label>หมวดหมู่</label>
                     <p id="modalCategory">-</p>
+                </div>
+                <div class="detail-item">
+                    <label>เจตนา</label>
+                    <p id="modalIntent">-</p>
+                </div>
+                <div class="detail-item">
+                    <label>ระดับความรีบเร่ง</label>
+                    <p id="modalUrgency">-</p>
                 </div>
                 <div class="detail-item">
                     <label>อีเมล</label>
@@ -532,6 +571,15 @@
 
     let allData = []
     let currentId = null
+    let sortCol = 'created_at'
+    let sortDir = 'desc'
+
+    const intentMap = { complaint: '📢 ร้องเรียน', demand: '✊ เรียกร้อง', request: '🙏 คำขอ' }
+    const urgencyMap = {
+        high:   '<span class="urgency-high">🔴 มาก</span>',
+        medium: '<span class="urgency-medium">🟡 กลาง</span>',
+        low:    '<span class="urgency-low">🟢 น้อย</span>'
+    }
 
     // ===== Login =====
     window.handleLogin = async () => {
@@ -601,21 +649,30 @@
             return
         }
 
-        const rows = data.map(item => {
+        const sorted = [...data].sort((a, b) => {
+            let va = a[sortCol] || '', vb = b[sortCol] || ''
+            if (sortCol === 'created_at') { va = new Date(va); vb = new Date(vb) }
+            return sortDir === 'asc' ? (va > vb ? 1 : -1) : (va < vb ? 1 : -1)
+        })
+
+        const statusMap = {
+            pending:  '<span class="badge badge-pending">⏳ รอดำเนินการ</span>',
+            progress: '<span class="badge badge-progress">🔄 กำลังดำเนินการ</span>',
+            done:     '<span class="badge badge-done">✅ เสร็จสิ้น</span>'
+        }
+
+        const rows = sorted.map(item => {
             const date = new Date(item.created_at).toLocaleDateString('th-TH', {
                 day: 'numeric', month: 'short', year: 'numeric'
             })
-            const statusMap = {
-                pending: '<span class="badge badge-pending">⏳ รอดำเนินการ</span>',
-                progress: '<span class="badge badge-progress">🔄 กำลังดำเนินการ</span>',
-                done: '<span class="badge badge-done">✅ เสร็จสิ้น</span>'
-            }
             return `
                 <tr>
                     <td>${date}</td>
-                    <td><code style="font-size:0.8rem; background:var(--gray-100); padding:0.2rem 0.5rem; border-radius:4px;">${item.tracking_code || '-'}</code></td>
+                    <td><code style="font-size:0.8rem;background:var(--gray-100);padding:0.2rem 0.5rem;border-radius:4px;">${item.tracking_code || '-'}</code></td>
                     <td><strong>${item.title || '-'}</strong></td>
                     <td><span class="category-badge">${item.category || '-'}</span></td>
+                    <td><span class="intent-badge">${intentMap[item.intent] || item.intent || '-'}</span></td>
+                    <td>${urgencyMap[item.urgency] || item.urgency || '-'}</td>
                     <td>${item.faculty || '-'}</td>
                     <td>${item.anonymous ? '🔒 ไม่ระบุ' : (item.student_id || '-')}</td>
                     <td>${statusMap[item.status] || item.status}</td>
@@ -623,17 +680,24 @@
                 </tr>`
         }).join('')
 
+        const mkTh = (col, label) => {
+            const cls = sortCol === col ? (sortDir === 'asc' ? 'sort-asc' : 'sort-desc') : ''
+            return `<th class="${cls}" onclick="sortBy('${col}')">${label}</th>`
+        }
+
         document.getElementById('tableContainer').innerHTML = `
             <table>
                 <thead>
                     <tr>
-                        <th>วันที่</th>
-                        <th>รหัสติดตาม</th>
-                        <th>หัวข้อ</th>
-                        <th>หมวด</th>
-                        <th>สาขา</th>
-                        <th>รหัสนิสิต</th>
-                        <th>สถานะ</th>
+                        ${mkTh('created_at','วันที่')}
+                        ${mkTh('tracking_code','รหัสติดตาม')}
+                        ${mkTh('title','หัวข้อ')}
+                        ${mkTh('category','หมวด')}
+                        ${mkTh('intent','เจตนา')}
+                        ${mkTh('urgency','ความรีบเร่ง')}
+                        ${mkTh('faculty','สาขา')}
+                        ${mkTh('student_id','รหัสนิสิต')}
+                        ${mkTh('status','สถานะ')}
                         <th></th>
                     </tr>
                 </thead>
@@ -641,20 +705,27 @@
             </table>`
     }
 
+    window.sortBy = (col) => {
+        if (sortCol === col) sortDir = sortDir === 'asc' ? 'desc' : 'asc'
+        else { sortCol = col; sortDir = 'asc' }
+        filterTable()
+    }
+
     // ===== Filter =====
     window.filterTable = () => {
-        const search = document.getElementById('searchInput').value.toLowerCase()
-        const status = document.getElementById('filterStatus').value
+        const search   = document.getElementById('searchInput').value.toLowerCase()
+        const status   = document.getElementById('filterStatus').value
         const category = document.getElementById('filterCategory').value
+        const intent   = document.getElementById('filterIntent').value
+        const urgency  = document.getElementById('filterUrgency').value
 
         const filtered = allData.filter(item => {
-            const matchSearch = !search ||
-                (item.title || '').toLowerCase().includes(search) ||
-                (item.description || '').toLowerCase().includes(search) ||
-                (item.student_id || '').toLowerCase().includes(search)
-            const matchStatus = !status || item.status === status
+            const matchSearch   = !search   || (item.title||'').toLowerCase().includes(search) || (item.description||'').toLowerCase().includes(search) || (item.student_id||'').toLowerCase().includes(search)
+            const matchStatus   = !status   || item.status   === status
             const matchCategory = !category || item.category === category
-            return matchSearch && matchStatus && matchCategory
+            const matchIntent   = !intent   || item.intent   === intent
+            const matchUrgency  = !urgency  || item.urgency  === urgency
+            return matchSearch && matchStatus && matchCategory && matchIntent && matchUrgency
         })
 
         renderTable(filtered)
@@ -666,15 +737,17 @@
         if (!item) return
         currentId = id
 
-        document.getElementById('modalTitle').textContent = item.title || 'ไม่มีหัวข้อ'
-        document.getElementById('modalStudentId').textContent = item.anonymous ? '🔒 ไม่ระบุตัวตน' : (item.student_id || '-')
-        document.getElementById('modalFaculty').textContent = item.faculty || '-'
-        document.getElementById('modalCategory').textContent = item.category || '-'
-        document.getElementById('modalEmail').textContent = item.email || '-'
-        document.getElementById('modalAnonymous').textContent = item.anonymous ? 'ใช่' : 'ไม่'
-        document.getElementById('modalTrackingCode').textContent = item.tracking_code || '-'
+        document.getElementById('modalTitle').textContent       = item.title || 'ไม่มีหัวข้อ'
+        document.getElementById('modalStudentId').textContent   = item.anonymous ? '🔒 ไม่ระบุตัวตน' : (item.student_id || '-')
+        document.getElementById('modalFaculty').textContent     = item.faculty || '-'
+        document.getElementById('modalCategory').textContent    = item.category || '-'
+        document.getElementById('modalIntent').textContent      = intentMap[item.intent] || item.intent || '-'
+        document.getElementById('modalUrgency').innerHTML       = urgencyMap[item.urgency] || item.urgency || '-'
+        document.getElementById('modalEmail').textContent       = item.email || '-'
+        document.getElementById('modalAnonymous').textContent   = item.anonymous ? 'ใช่' : 'ไม่'
+        document.getElementById('modalTrackingCode').textContent= item.tracking_code || '-'
         document.getElementById('modalDescription').textContent = item.description || '-'
-        document.getElementById('modalDate').textContent = new Date(item.created_at).toLocaleDateString('th-TH', {
+        document.getElementById('modalDate').textContent        = new Date(item.created_at).toLocaleDateString('th-TH', {
             day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
         })
         document.getElementById('modalStatus').value = item.status || 'pending'
